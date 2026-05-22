@@ -1,4 +1,4 @@
-﻿using Fayora.Domain.Common.Results;
+using Fayora.Domain.Common.Results;
 using Fayora.Domain.Enums.SharedModule;
 using Fayora.Domain.ValueObjects;
 
@@ -57,5 +57,26 @@ namespace Fayora.Domain.Entities.SharedModule
 
         public void AddImage(Guid imageId) => _imageIds.Add(imageId);
         public void AddImages(IEnumerable<Guid> imageIds) => _imageIds.AddRange(imageIds);
+
+        public void Update(
+            string name,
+            string? description,
+            decimal rating,
+            decimal latitude,
+            decimal longitude,
+            LocationCategory category,
+            FileUrl mainImageUrl)
+        {
+            Name = name;
+            Description = description;
+            Rating = rating;
+            var coordinatesResult = GeoPoint.Create(latitude, longitude);
+            if (coordinatesResult.IsSuccess)
+            {
+                Coordinates = coordinatesResult.Value;
+            }
+            Category = category;
+            MainImageUrl = mainImageUrl;
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Fayora.Application.Common.Interfaces.Services.AuthModule;
+using Fayora.Application.Common.Interfaces.Services.AuthModule;
 using Fayora.Application.Common.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -27,7 +27,12 @@ public class ClientContextProvider(IHttpContextAccessor accessor) : IClientConte
         var userName = GetClaimsValue(JwtRegisteredClaimNames.Name);
         var avatarUrl = GetClaimsValue(JwtRegisteredClaimNames.Picture);
 
-        var roles = GetClaimsValues(ClaimTypes.Role);
+        var roles = GetClaimsValues(ClaimTypes.Role)
+            .Concat(GetClaimsValues("roles"))
+            .SelectMany(r => r.Split(',', StringSplitOptions.RemoveEmptyEntries))
+            .Select(r => r.Trim())
+            .Distinct()
+            .ToList();
 
         return new ClientContext(
             userId,

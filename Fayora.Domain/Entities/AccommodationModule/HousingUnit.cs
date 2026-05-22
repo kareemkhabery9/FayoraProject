@@ -1,4 +1,4 @@
-﻿using Fayora.Domain.Common.Results;
+using Fayora.Domain.Common.Results;
 using Fayora.Domain.Enums.AccommodationModule;
 using Fayora.Domain.Enums.SharedModule;
 using Fayora.Domain.Enums.TourGuideModule;
@@ -201,6 +201,42 @@ public class HousingUnit : BaseEntity<Guid>
         Status = ItemStatus.Rejected;
         AdminNotes = adminNotes;
         return Result.Success;
+    }
+
+    public void AdminUpdate(
+        string title,
+        string? description,
+        HousingType type,
+        int locationId,
+        string addressDetails,
+        GeoPoint coordinates,
+        int numberOfRooms,
+        int bedRooms,
+        int bathRooms,
+        int numberOfBeds,
+        int maxGuests,
+        TimeSpan checkInTime,
+        TimeSpan checkOutTime,
+        decimal pricePerNight,
+        FileUrl mainImageUrl,
+        ItemStatus status)
+    {
+        Title = title;
+        Description = description;
+        Type = type;
+        LocationId = locationId;
+        AddressDetails = addressDetails;
+        Coordinates = coordinates;
+        NumberOfRooms = numberOfRooms;
+        BedRooms = bedRooms;
+        BathRooms = bathRooms;
+        NumberOfBeds = numberOfBeds;
+        MaxGuests = maxGuests;
+        CheckInTime = checkInTime;
+        CheckOutTime = checkOutTime;
+        PricePerNight = pricePerNight;
+        MainImageUrl = mainImageUrl;
+        Status = status;
     }
 
     private HousingUnit() { }

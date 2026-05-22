@@ -7,6 +7,7 @@ using Fayora.Domain.Entities.GuideModule;
 using Fayora.Domain.Entities.IdentityModule;
 using Fayora.Domain.Entities.SharedModule;
 using Fayora.Domain.Entities.TouristModule;
+using Fayora.Domain.Entities.ChatbotModule;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -59,6 +60,15 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<City> Cities { get; set; }
     public DbSet<Location> Locations { get; set; }
     public DbSet<LocationImage> LocationImages { get; set; }
+
+    // Chatbot Module
+    public DbSet<ChatbotSession> ChatbotSessions { get; set; }
+    public DbSet<ChatbotMessage> ChatbotMessages { get; set; }
+
+    // Notification Module
+    public DbSet<Fayora.Domain.Entities.NotificationModule.DeviceToken> DeviceTokens { get; set; }
+    public DbSet<Fayora.Domain.Entities.NotificationModule.PushCampaign> PushCampaigns { get; set; }
+
 
     public async Task CommitChangesAsync(CancellationToken cancellationToken = default)
     {

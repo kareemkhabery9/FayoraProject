@@ -1,4 +1,4 @@
-﻿namespace Fayora.Domain.Enums.IdentityModule;
+namespace Fayora.Domain.Enums.IdentityModule;
 
 [Flags]
 public enum Role
@@ -9,4 +9,5 @@ public enum Role
     TourCompany = 8,
     UnitOwner = 16,
     Support = 32,
+    Bot = 64,
 }

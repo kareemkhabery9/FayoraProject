@@ -1,4 +1,4 @@
-﻿using Fayora.Domain.Common.Entity;
+using Fayora.Domain.Common.Entity;
 using Fayora.Domain.Common.Events.IdentityModule;
 using Fayora.Domain.Common.Interfaces.IdentityModule;
 using Fayora.Domain.Common.Results;
@@ -137,6 +137,22 @@ public class User : AuditableEntity<Guid>
             user.PrimaryEmail = emailResult.Value;
 
         return user;
+    }
+
+    public static User CreateBotUser(Guid botId, string firstName, string lastName)
+    {
+        return new User
+        {
+            Id = botId,
+            FirstName = firstName,
+            LastName = lastName,
+            Roles = Role.Bot,
+            Status = UserStatus.Active,
+            IsEmailVerified = true,
+            IsPhoneVerified = true,
+            CurrentBalance = 0,
+            IsProfileComplete = true
+        };
     }
 
     private static FileUrl? GetDefaultProfileImageForSocialProvider(string? pictureUrl)
@@ -488,6 +504,42 @@ public class User : AuditableEntity<Guid>
             Roles |= role;
             Updated();
         }
+    }
+
+    public void AdminUpdateDetails(string firstName, string lastName, string? email, string? phone)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        if (!string.IsNullOrWhiteSpace(email))
+        {
+            var emailResult = Email.Create(email);
+            if (emailResult.IsSuccess)
+                PrimaryEmail = emailResult.Value;
+        }
+        if (!string.IsNullOrWhiteSpace(phone))
+        {
+            var phoneResult = PhoneNumber.Create(phone);
+            if (phoneResult.IsSuccess)
+                PhoneNumber = phoneResult.Value;
+        }
+        Updated();
+    }
+
+    public void AdminUpdateStatus(UserStatus status)
+    {
+        Status = status;
+        if (status == UserStatus.Active)
+        {
+            LockedUntil = null;
+            AccessFailedCount = 0;
+        }
+        Updated();
+    }
+
+    public void AdminUpdateRoles(Role role)
+    {
+        Roles = role;
+        Updated();
     }
 
     private User() { }

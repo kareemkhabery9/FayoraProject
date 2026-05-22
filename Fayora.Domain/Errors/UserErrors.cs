@@ -1,4 +1,4 @@
-﻿using Fayora.Domain.Common.Results;
+using Fayora.Domain.Common.Results;
 using Fayora.Domain.Entities.IdentityModule;
 
 namespace Fayora.Domain.Errors;
@@ -108,4 +108,9 @@ public static class UserErrors
        code: "User.UserNotFound",
        description: "No user found with the provided information."
    );
+
+    public static readonly Error DuplicateEmail = Error.Conflict(
+        code: "User.DuplicateEmail",
+        description: "A user with this email already exists."
+    );
 }

@@ -364,3 +364,5 @@ FodyWeavers.xsd
 /Fayora.Api/appsettings.Development.json
 /Fayora.Contracts/ChatModule/GetChats/ChatDto.cs
 /.gitignore
+/fayora-app-firebase-adminsdk-fbsvc-b841a1bd04.json
+

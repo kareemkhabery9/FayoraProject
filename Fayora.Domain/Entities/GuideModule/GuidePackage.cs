@@ -1,4 +1,4 @@
-﻿using Fayora.Domain.Common.Entity;
+using Fayora.Domain.Common.Entity;
 using Fayora.Domain.Common.Results;
 using Fayora.Domain.Enums.SharedModule;
 using Fayora.Domain.Enums.TourGuideModule;
@@ -291,5 +291,26 @@ public class GuidePackage : AuditableEntity<Guid>
         }
 
         return Result.Success;
+    }
+
+    public void AdminUpdate(
+        string title,
+        string description,
+        int durationHours,
+        int maxCapacity,
+        decimal adultPrice,
+        decimal childPrice,
+        TourType tourTypes,
+        ItemStatus status)
+    {
+        Title = title;
+        Description = description;
+        DurationHours = durationHours;
+        MaxCapacity = maxCapacity;
+        AdultPrice = adultPrice;
+        ChildPrice = childPrice;
+        TourTypes = tourTypes;
+        PackageStatus = status;
+        Updated();
     }
 }

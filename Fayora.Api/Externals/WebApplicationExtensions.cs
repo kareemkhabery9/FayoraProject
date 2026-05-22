@@ -1,4 +1,4 @@
-﻿using Fayora.Infrastructure.Jobs;
+using Fayora.Infrastructure.Jobs;
 using Fayora.Infrastructure.Persistence.Repositories;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +16,20 @@ public static class WebApplicationExtensions
         if (pendingMigrations.Any())
         {
             await dbContext.Database.MigrateAsync();
+        }
+
+        // Seed Chatbot User if not exists
+        var botUserId = Fayora.Domain.Common.ChatbotConstants.BotUserId;
+        var botUserExists = await dbContext.Users.AnyAsync(u => u.Id == botUserId);
+        if (!botUserExists)
+        {
+            var botUser = Fayora.Domain.Entities.IdentityModule.User.CreateBotUser(
+                botUserId,
+                Fayora.Domain.Common.ChatbotConstants.BotFirstName,
+                Fayora.Domain.Common.ChatbotConstants.BotLastName);
+
+            dbContext.Users.Add(botUser);
+            await dbContext.SaveChangesAsync();
         }
 
         return app;

@@ -11,6 +11,7 @@ using Fayora.Application.Common.Interfaces.Persistences.TouristModule;
 using Fayora.Application.Common.Interfaces.Services.AuthModule;
 using Fayora.Application.Common.Interfaces.Services.BookingModule;
 using Fayora.Application.Common.Interfaces.Services.SharedModule;
+using Fayora.Application.Common.Interfaces.Services.ChatbotModule;
 using Fayora.Application.Common.Strategies;
 using Fayora.Domain.Common.Interfaces.IdentityModule;
 using Fayora.Infrastructure.Persistence.Caching;
@@ -28,6 +29,7 @@ using Fayora.Infrastructure.Services.Authentication;
 using Fayora.Infrastructure.Services.AuthModule;
 using Fayora.Infrastructure.Services.BookingModule;
 using Fayora.Infrastructure.Services.SharedModule;
+using Fayora.Infrastructure.Services.Chatbot;
 using Fayora.Infrastructure.Settings;
 using Fayora.Infrastructure.Strategies;
 using Hangfire;
@@ -39,6 +41,12 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 using System.Text;
+
+
+using Fayora.Application.Common.Interfaces.Persistences.NotificationModule;
+using Fayora.Infrastructure.Persistence.Repositories.NotificationModule;
+using Fayora.Application.Common.Interfaces.Services.NotificationModule;
+using Fayora.Infrastructure.Services.NotificationModule;
 
 
 namespace Fayora.Infrastructure;
@@ -71,6 +79,12 @@ public static class DependencyInjection
             ConnectionMultiplexer.Connect(redisConnectionString!)
         );
 
+
+        // Admin Module
+        services.AddScoped<IAdminRepository, AdminRepository>();
+
+        // Notification Module
+        services.AddScoped<INotificationRepository, NotificationRepository>();
 
         // Identity Module
         services.AddScoped<IDeviceRepository, DeviceRepository>();
@@ -161,14 +175,25 @@ public static class DependencyInjection
         services.AddScoped<IVerificationStrategy, TourGuideVerificationStrategy>();
         services.AddScoped<IVerificationStrategy, TourCompanyVerificationStrategy>();
         services.AddScoped<IVerificationStrategy, GuidePackageVerificationStrategy>();
+        services.AddScoped<IVerificationStrategy, HousingUnitVerificationStrategy>();
 
         services.AddScoped<IVerificationFactory, VerificationFactory>();
 
         services.AddScoped<IFileStorageService, LocalFileService>();
+        services.AddSingleton<IFirebaseNotificationService, FirebaseNotificationService>();
+        services.AddScoped<INotificationScheduler, NotificationScheduler>();
 
         services.AddScoped<IInventoryModerationService, InventoryModerationService>();
 
         services.AddHttpClient<IPaymentService, PaymobPaymentService>();
+
+        // Chatbot Module
+        services.Configure<GeminiSettings>(configuration.GetSection(GeminiSettings.SectionName));
+        services.Configure<OpenAISettings>(configuration.GetSection(OpenAISettings.SectionName));
+        services.AddHttpClient<GeminiChatbotService>();
+        services.AddHttpClient<OpenAIChatbotService>();
+        services.AddScoped<IChatbotServiceFactory, ChatbotServiceFactory>();
+        services.AddScoped<IChatbotInteractionService, ChatbotInteractionService>();
 
 
         return services;
@@ -192,6 +217,7 @@ public static class DependencyInjection
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = jwtSettings.Issuer,
                 ValidAudience = jwtSettings.Audience,
+                RoleClaimType = "roles",
                 IssuerSigningKey = new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(jwtSettings.Secret)),
             });
