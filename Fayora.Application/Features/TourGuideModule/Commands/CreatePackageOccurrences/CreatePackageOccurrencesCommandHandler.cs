@@ -1,4 +1,4 @@
-﻿using Fayora.Application.Common.Abstractions.Messaging;
+using Fayora.Application.Common.Abstractions.Messaging;
 using Fayora.Application.Common.Interfaces.Persistences.GuideModule;
 using Fayora.Application.Common.Interfaces.Persistences.IdentityModule;
 using Fayora.Application.Common.Interfaces.Services.AuthModule;
@@ -9,6 +9,7 @@ namespace Fayora.Application.Features.TourGuideModule.Commands.CreatePackageOccu
 
 public class CreatePackageOccurrencesCommandHandler(
     IPackageRepository packageRepository,
+    IPackageOccurrenceRepository packageOccurrenceRepository,
     IClientContextProvider clientContextProvider,
     IUnitOfWork unitOfWork
 ) : ICommandHandler<CreatePackageOccurrencesCommand, Result<Success>>
@@ -33,6 +34,11 @@ public class CreatePackageOccurrencesCommandHandler(
 
         if (result.IsError)
             return result.Errors;
+
+        foreach (var occurrence in result.Value)
+        {
+            packageOccurrenceRepository.Add(occurrence);
+        }
 
         await unitOfWork.CommitChangesAsync(cancellationToken);
 
