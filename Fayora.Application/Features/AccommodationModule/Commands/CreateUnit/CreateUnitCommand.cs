@@ -21,6 +21,6 @@ public record CreateUnitCommand(
     TimeSpan CheckInTime,
     TimeSpan CheckOutTime,
     string MainImageUrl,
-    Guid VerificationRequestId,
+    string VerificationDocumentUrl,
     HashSet<string> ImageUrls,
     List<int> AmenityIds) : ICommand<Result<Guid>>;

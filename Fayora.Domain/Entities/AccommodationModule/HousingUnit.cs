@@ -36,6 +36,7 @@ public class HousingUnit : BaseEntity<Guid>
     public int Views { get; private set; }
 
     public FileUrl MainImageUrl { get; private set; } = null!;
+    public FileUrl VerificationDocumentUrl { get; private set; } = null!;
 
     private readonly List<Guid> _imageIds = [];
     public IReadOnlyCollection<Guid> ImageIds => _imageIds.AsReadOnly();
@@ -63,6 +64,7 @@ public class HousingUnit : BaseEntity<Guid>
         TimeSpan checkInTime,
         TimeSpan checkOutTime,
         FileUrl mainImageUrl,
+        FileUrl verificationDocumentUrl,
         List<MasterAmenity> amenities)
     {
         OwnerId = ownerId;
@@ -81,7 +83,7 @@ public class HousingUnit : BaseEntity<Guid>
         CheckInTime = checkInTime;
         CheckOutTime = checkOutTime;
         MainImageUrl = mainImageUrl;
-
+        VerificationDocumentUrl = verificationDocumentUrl;
         Status = ItemStatus.Pending;
         Rating = 0m;
         ReviewCount = 0;
@@ -106,6 +108,7 @@ public class HousingUnit : BaseEntity<Guid>
         TimeSpan checkInTime,
         TimeSpan checkOutTime,
         FileUrl mainImageUrl,
+        FileUrl verificationDocumentUrl,
         List<MasterAmenity> amenities)
     {
         if (ownerId == Guid.Empty)
@@ -163,6 +166,7 @@ public class HousingUnit : BaseEntity<Guid>
             checkInTime,
             checkOutTime,
             mainImageUrl,
+            verificationDocumentUrl,
             amenities);
     }
 

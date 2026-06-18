@@ -77,7 +77,7 @@ public class AccommodationController(ISender sender, IMapper mapper) : ApiContro
             request.CheckInTime,
             request.CheckOutTime,
             request.MainImageUrl,
-            request.VerificationRequestId,
+            request.VerificationDocumentUrl,
             request.ImageUrls,
             [.. request.AmenityIds]
         );

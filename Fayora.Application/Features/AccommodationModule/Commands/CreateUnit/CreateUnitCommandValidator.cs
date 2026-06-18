@@ -48,8 +48,10 @@ public class CreateUnitCommandValidator : AbstractValidator<CreateUnitCommand>
             .NotEmpty().WithMessage("Main image URL is required.")
             .MaximumLength(2048).WithMessage("Main image URL must not exceed 2048 characters.");
 
-        RuleFor(x => x.VerificationRequestId)
-            .NotEmpty().WithMessage("Verification request ID is required.");
+        RuleFor(x => x.VerificationDocumentUrl)
+        .NotEmpty().WithMessage("Verification document URL is required.")
+        .MaximumLength(2048).WithMessage("Verification document URL must not exceed 2048 characters.");
+
 
         RuleFor(x => x.ImageUrls)
             .NotEmpty().WithMessage("At least one additional image URL must be provided.");

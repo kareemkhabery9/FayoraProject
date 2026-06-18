@@ -17,7 +17,7 @@ public record CreateUnitRequest(
     TimeSpan CheckInTime,
     TimeSpan CheckOutTime,
     string MainImageUrl,
-    Guid VerificationRequestId,
+    string VerificationDocumentUrl,
     HashSet<string> ImageUrls,
     HashSet<int> AmenityIds
 );

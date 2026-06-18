@@ -26,6 +26,9 @@ public class CreateUnitCommandHandler(
         var mainImageResult = FileUrl.Create(request.MainImageUrl);
         if (mainImageResult.IsError) return mainImageResult.Errors;
 
+        var verificationDocumentResult = FileUrl.Create(request.VerificationDocumentUrl);
+        if (verificationDocumentResult.IsError) return verificationDocumentResult.Errors;
+
         var imageResults = request.ImageUrls.Select(FileUrl.Create).ToList();
         var failedImage = imageResults.FirstOrDefault(r => r.IsError);
         if (failedImage is not null) return failedImage.Errors;
@@ -54,6 +57,7 @@ public class CreateUnitCommandHandler(
             request.CheckInTime,
             request.CheckOutTime,
             mainImageResult.Value,
+            verificationDocumentResult.Value,
             amenities);
 
         if (housingUnitResult.IsError) return housingUnitResult.Errors;
