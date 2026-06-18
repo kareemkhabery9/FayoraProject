@@ -9,6 +9,11 @@ namespace Fayora.Infrastructure.Persistence.Repositories.GuideModule;
 public class PackageOccurrenceRepository(ApplicationDbContext context)
     : IPackageOccurrenceRepository
 {
+    public void Add(PackageOccurrence occurrence)
+    {
+        context.PackageOccurrences.Add(occurrence);
+    }
+
     public async Task AddRangeAsync(List<PackageOccurrence> occurrences, CancellationToken cancellationToken)
     {
         await context.PackageOccurrences.AddRangeAsync(occurrences, cancellationToken);

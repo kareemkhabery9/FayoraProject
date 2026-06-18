@@ -192,6 +192,8 @@ public class HousingUnit : BaseEntity<Guid>
 
     public void RemoveImage(Guid imageId) => _imageIds.Remove(imageId);
 
+    public void ClearImages() => _imageIds.Clear();
+
     public Result<Success> Reject(string adminNotes)
     {
         if (Status != ItemStatus.Pending)

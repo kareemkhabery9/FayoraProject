@@ -1,4 +1,4 @@
-﻿using Fayora.Application.Common.Interfaces.Persistences.AccommodationModule;
+using Fayora.Application.Common.Interfaces.Persistences.AccommodationModule;
 using Fayora.Domain.Entities.AccommodationModule;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +9,11 @@ public class HousingUnitImageRepository(ApplicationDbContext context) : IHousing
     public void AddImages(IEnumerable<HousingUnitImage> images)
     {
         context.HousingUnitImages.AddRange(images);
+    }
+
+    public void RemoveImages(IEnumerable<HousingUnitImage> images)
+    {
+        context.HousingUnitImages.RemoveRange(images);
     }
 
     public async Task<List<HousingUnitImage>> GetByUnitIdAsync(

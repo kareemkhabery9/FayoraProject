@@ -1,5 +1,7 @@
 using AutoMapper;
 using Fayora.Application.Features.AccommodationModule.Commands.CreateUnit;
+using Fayora.Application.Features.AccommodationModule.Commands.UpdateUnit;
+using Fayora.Application.Features.AccommodationModule.Commands.DeleteUnit;
 using Fayora.Application.Features.AccommodationModule.Commands.CreateUnitCalendarBlock;
 using Fayora.Application.Features.AccommodationModule.Commands.CreateUnitOwner;
 using Fayora.Application.Features.AccommodationModule.Queries.GetAllAmenities;
@@ -86,7 +88,62 @@ public class AccommodationController(ISender sender, IMapper mapper) : ApiContro
 
         return result.Match(
             value => Ok(value),
-            errors => Problem()
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPut("housing-units/{id:guid}")]
+    public async Task<IActionResult> UpdateUnit(
+        [FromRoute] Guid id,
+        [FromBody] UpdateUnitRequest request,
+        CancellationToken cancellationToken)
+    {
+        if (!Enum.TryParse<HousingType>(request.Type, true, out var housingType))
+        {
+            return BadRequest("Invalid housing type.");
+        }
+
+        var command = new UpdateUnitCommand(
+            id,
+            request.Title,
+            request.Description,
+            request.LocationId,
+            request.AddressDetails,
+            request.Latitude,
+            request.Longitude,
+            housingType,
+            request.PricePerNight,
+            request.NumberOfRooms,
+            request.BedRooms,
+            request.BathRooms,
+            request.NumberOfBeds,
+            request.MaxGuests,
+            request.CheckInTime,
+            request.CheckOutTime,
+            request.MainImageUrl,
+            request.ImageUrls,
+            [.. request.AmenityIds]
+        );
+
+        var result = await sender.Send(command, cancellationToken);
+
+        return result.Match(
+            value => Ok(value),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpDelete("housing-units/{id:guid}")]
+    public async Task<IActionResult> DeleteUnit(
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeleteUnitCommand(id);
+        var result = await sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
+            errors => Problem(errors)
         );
     }
 

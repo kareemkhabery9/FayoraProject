@@ -372,7 +372,7 @@ public class GuidePackage : AuditableEntity<Guid>
     }
 
 
-    public Result<Success> AddOccurrences(IEnumerable<(DateOnly Date, int AvailableSeats)> newOccurrences)
+    public Result<List<PackageOccurrence>> AddOccurrences(IEnumerable<(DateOnly Date, int AvailableSeats)> newOccurrences)
     {
         var requestedDates = newOccurrences.Select(x => x.Date).ToList();
 
@@ -384,12 +384,15 @@ public class GuidePackage : AuditableEntity<Guid>
         if (hasOverlapWithExisting)
             return GuideErrors.PackageOccurrenceOverlap;
 
+        var addedOccurrences = new List<PackageOccurrence>();
         foreach (var item in newOccurrences)
         {
-            _occurrences.Add(new PackageOccurrence(this.Id, item.Date, item.AvailableSeats));
+            var occurrence = new PackageOccurrence(this.Id, item.Date, item.AvailableSeats);
+            _occurrences.Add(occurrence);
+            addedOccurrences.Add(occurrence);
         }
 
-        return Result.Success;
+        return addedOccurrences;
     }
 
     public Result<Success> RemoveOccurrence(Guid occurrenceId)

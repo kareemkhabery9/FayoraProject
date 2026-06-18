@@ -13,6 +13,11 @@ public class HousingUnitRepository(ApplicationDbContext context) : IHousingUnitR
         context.HousingUnits.Add(housingUnit);
     }
 
+    public void RemoveUnit(HousingUnit housingUnit)
+    {
+        context.HousingUnits.Remove(housingUnit);
+    }
+
     public Task<int> GetLiveListingsStatsAsync(CancellationToken cancellationToken = default)
     {
         return context.HousingUnits.CountAsync(u => u.Status == ItemStatus.Active, cancellationToken);
