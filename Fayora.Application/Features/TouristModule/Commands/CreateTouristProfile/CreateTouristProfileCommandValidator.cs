@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 
 namespace Fayora.Application.Features.TouristModule.Commands.CreateTouristProfile;
 
@@ -28,5 +28,9 @@ public class CreateTouristProfileCommandValidator : AbstractValidator<CreateTour
         RuleForEach(x => x.InterestIds)
             .GreaterThan(0)
             .WithMessage("Interest ID must be greater than 0.");
+
+        RuleFor(x => x.DeviceId)
+            .NotEmpty().WithMessage("Device ID is required.")
+            .MaximumLength(100).WithMessage("Device ID must not exceed 100 characters.");
     }
 }

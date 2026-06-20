@@ -1,4 +1,4 @@
-﻿using Fayora.Application.Common.Interfaces.Persistences.TouristModule;
+using Fayora.Application.Common.Interfaces.Persistences.TouristModule;
 using Fayora.Domain.Entities.TouristModule;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,5 +26,10 @@ public class TouristRepository(ApplicationDbContext context) : ITouristRepositor
     public async Task<bool> IsTouristProfileExistAsync(Guid userId, CancellationToken cancellationToken = default!)
     {
         return await context.Tourists.AnyAsync(t => t.UserId == userId, cancellationToken);
+    }
+
+    public void AddTouristInterests(IEnumerable<TouristInterest> interests)
+    {
+        context.TouristInterests.AddRange(interests);
     }
 }
