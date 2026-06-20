@@ -1,4 +1,4 @@
-﻿using Fayora.Application.Common.Abstractions.Messaging;
+using Fayora.Application.Common.Abstractions.Messaging;
 using Fayora.Application.Common.Interfaces.Persistences.IdentityModule;
 using Fayora.Application.Common.Interfaces.Persistences.TouristModule;
 using Fayora.Application.Common.Interfaces.Services.AuthModule;
@@ -31,6 +31,8 @@ public class CreateTouristProfileCommandHandler(
             request.BudgetTier,
             request.TravelStyle);
 
+        touristRepository.AddTourist(touristProfile);
+
         if (request.InterestIds is not null && request.InterestIds.Count > 0)
         {
             if ((await masterInterestRepository.InterestsExistAsync(request.InterestIds, cancellationToken)) is false)
@@ -38,10 +40,12 @@ public class CreateTouristProfileCommandHandler(
                 return TouristErrors.MasterInterestsNotFound;
             }
 
-            touristProfile.AddInterests(request.InterestIds);
-        }
+            var interests = request.InterestIds
+                .Select(id => new TouristInterest(touristProfile.Id, id))
+                .ToList();
 
-        touristRepository.AddTourist(touristProfile);
+            touristRepository.AddTouristInterests(interests);
+        }
 
         var tokens = await authTokenGenerator.GenerateTokensAsync(
             user, request.DeviceId,
@@ -57,4 +61,4 @@ public class CreateTouristProfileCommandHandler(
             tokens.RefreshToken,
             tokens.ExpiresIn);
     }
-}
+}
